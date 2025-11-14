@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Série - Ordem Paranormal RPG</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="top-menu">
+        <button onclick="novaFicha()" class="menu-btn">Nova Ficha</button>
+        <button onclick="exportarPNG()" class="menu-btn">Exportar PNG</button>
+        <button onclick="abrirSobre()" class="menu-btn">Sobre</button>
+    </div>
+
+    <div id="ficha-container">
+        <div class="ficha-header">
+            <h1>FICHA DE SÉRIE</h1>
+        </div>
+
+        <div class="ficha-content">
+            <!-- Informações Básicas -->
+            <section class="secao-basica">
+                <div class="campo-grupo">
+                    <label>Nome da Série</label>
+                    <input type="text" id="nome-serie" placeholder="Digite o nome da série">
+                </div>
+                
+                <div class="campo-grupo">
+                    <label>Mestre</label>
+                    <input type="text" id="mestre" placeholder="Digite o nome do mestre">
+                </div>
+
+                <div class="campo-grupo">
+                    <label>Jogadores</label>
+                    <div id="lista-jogadores">
+                        <div class="jogador-item">
+                            <input type="text" class="jogador-input" placeholder="Nome do jogador 1">
+                            <button onclick="removerJogador(this)" class="btn-remover-jogador">×</button>
+                        </div>
+                        <div class="jogador-item">
+                            <input type="text" class="jogador-input" placeholder="Nome do jogador 2">
+                            <button onclick="removerJogador(this)" class="btn-remover-jogador">×</button>
+                        </div>
+                        <div class="jogador-item">
+                            <input type="text" class="jogador-input" placeholder="Nome do jogador 3">
+                            <button onclick="removerJogador(this)" class="btn-remover-jogador">×</button>
+                        </div>
+                        <div class="jogador-item">
+                            <input type="text" class="jogador-input" placeholder="Nome do jogador 4">
+                            <button onclick="removerJogador(this)" class="btn-remover-jogador">×</button>
+                        </div>
+                    </div>
+                    <button onclick="adicionarJogador()" class="btn-adicionar">+ Adicionar Jogador</button>
+                </div>
+
+                <div class="campo-grupo">
+                    <label>Sinopse</label>
+                    <textarea id="sinopse" rows="5" placeholder="Descreva a sinopse da série..."></textarea>
+                </div>
+            </section>
+
+            <div class="colunas-container">
+                <div class="coluna-esquerda">
+            <!-- Regras Opcionais do Livro Básico -->
+            <section class="secao-regras">
+                <h2>REGRAS OPCIONAIS DO LIVRO BÁSICO</h2>
+                <div class="regras-lista">
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="basico-1">
+                        <span>Personagens de NEX 0% (OPRPG, p. 171)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="basico-2">
+                        <span>Personagens de Idade Variada (OPRPG, p. 172)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="basico-3">
+                        <span>Contagem de Munição (OPRPG, p. 174)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="basico-4">
+                        <span>Lesões (OPRPG, p. 174)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="basico-5">
+                        <span>Inspiração Resoluta (OPRPG, p. 174)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="basico-6">
+                        <span>Loucura Não Letal (OPRPG, p. 175)</span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Regras Opcionais de Sobrevivendo ao Horror -->
+            <section class="secao-regras">
+                <h2>REGRAS OPCIONAIS DE SOBREVIVENDO AO HORROR</h2>
+                <div class="regras-lista">
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="sah-1">
+                        <span>NEX & Experiência (SaH, p. 98)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="sah-2">
+                        <span>Jogando sem Sanidade (SaH, p. 104)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="sah-3">
+                        <span>Ferimentos Debilitantes (SaH, p. 105)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="sah-4">
+                        <span>Jogando sem Mapa (SaH, p. 106)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="sah-5">
+                        <span>Evolução por Patentes (SaH, p. 108)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="sah-6">
+                        <span>Os Limites da Compreensão Humana (SaH, p. 113)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="sah-7">
+                        <span>Conjuração Complexa (SaH, p. 114)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="sah-8">
+                        <span>Conjurando Rituais Desconhecidos (SaH, p. 117)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="sah-9">
+                        <span>Combate Narrativo (SaH, p. 119)</span>
+                    </label>
+                </div>
+            </section>
+                </div>
+
+                <div class="coluna-direita">
+            <!-- Estilos de Jogo -->
+            <section class="secao-regras">
+                <h2>ESTILOS DE JOGO</h2>
+                
+                <div class="estilo-grupo">
+                    <h3>Foco em Ação</h3>
+                    <ul class="lista-estilos">
+                        <li>Contagem de Munição (OPRPG, p. 174)</li>
+                        <li>Lesões (OPRPG, p. 174)</li>
+                        <li>Inspiração Resoluta (OPRPG, p. 174)</li>
+                        <li>Conjurando Rituais Desconhecidos (SaH, p. 117)</li>
+                    </ul>
+                </div>
+
+                <div class="estilo-grupo">
+                    <h3>Foco em Drama</h3>
+                    <ul class="lista-estilos">
+                        <li>Personagens de Idade Variada (OPRPG, p. 172)</li>
+                        <li>NEX & Experiência (SaH, p. 98)</li>
+                        <li>Ferimentos Debilitantes (SaH, p. 105)</li>
+                        <li>Jogando sem Mapa (SaH, p. 106)</li>
+                        <li>Evolução por Patentes (SaH, p. 108)</li>
+                        <li>Os Limites da Compreensão Humana (SaH, p. 113)</li>
+                        <li>Conjurando Rituais Desconhecidos (SaH, p. 117)</li>
+                        <li>Combate Narrativo (SaH, p. 119)</li>
+                    </ul>
+                </div>
+
+                <div class="estilo-grupo">
+                    <h3>Foco em Horror</h3>
+                    <ul class="lista-estilos">
+                        <li>Personagens de Idade Variada (OPRPG, p. 172)</li>
+                        <li>Contagem de Munição (OPRPG, p. 174)</li>
+                        <li>NEX & Experiência (SaH, p. 98)</li>
+                        <li>Jogando sem Sanidade (SaH, p. 104)</li>
+                        <li>Ferimentos Debilitantes (SaH, p. 105)</li>
+                        <li>Jogando sem Mapa (SaH, p. 106)</li>
+                        <li>Evolução por Patentes (SaH, p. 108)</li>
+                        <li>Os Limites da Compreensão Humana (SaH, p. 113)</li>
+                        <li>Conjuração Complexa (SaH, p. 114)</li>
+                        <li>Conjurando Rituais Desconhecidos (SaH, p. 117)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Regras da Casa -->
+            <section class="secao-regras">
+                <h2>REGRAS DA CASA</h2>
+                <div id="regras-casa-lista" class="regras-lista">
+                    <!-- Regras personalizadas serão adicionadas aqui -->
+                </div>
+                <button onclick="adicionarRegraCasa()" class="btn-adicionar">+ Adicionar Regra da Casa</button>
+            </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Sobre -->
+    <div id="modal-sobre" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharSobre()">&times;</span>
+            <h2>Sobre a Ficha de Série</h2>
+            <p>Esta é uma ferramenta digital para criar e gerenciar fichas de série para campanhas de RPG inspiradas em Ordem Paranormal.</p>
+            <p><strong>Recursos:</strong></p>
+            <ul>
+                <li>Configure todas as informações da série</li>
+                <li>Marque regras opcionais ativas</li>
+                <li>Adicione regras personalizadas da casa</li>
+                <li>Exporte tudo como imagem PNG</li>
+            </ul>
+            <p><strong>Como usar:</strong></p>
+            <ol>
+                <li>Preencha os campos da ficha</li>
+                <li>Marque as regras que serão utilizadas</li>
+                <li>Adicione regras da casa personalizadas</li>
+                <li>Clique em "Exportar PNG" para salvar</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
