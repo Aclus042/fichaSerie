@@ -220,6 +220,25 @@
         </div>
     </div>
 
+    <!-- Modal Imagem Exportada -->
+    <div id="modal-imagem" class="modal-imagem">
+        <div class="modal-imagem-content">
+            <div class="modal-imagem-header">
+                <h3>Ficha Exportada</h3>
+                <button onclick="fecharModalImagem()" class="btn-fechar-modal">Fechar</button>
+            </div>
+            <div class="modal-imagem-instrucoes">
+                <strong>📱 Mobile:</strong> Segure a imagem para salvar nas suas fotos<br>
+                <strong>💻 Desktop:</strong> Clique com botão direito para salvar ou use o botão abaixo
+            </div>
+            <img id="imagem-exportada" class="imagem-exportada" alt="Ficha de Série Exportada">
+            <div class="modal-imagem-footer">
+                <button onclick="baixarImagem()" class="btn-download">⬇️ Baixar PNG</button>
+                <button onclick="fecharModalImagem()" class="btn-fechar-modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

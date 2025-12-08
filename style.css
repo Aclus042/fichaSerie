@@ -139,6 +139,23 @@ body {
 .campo-grupo textarea {
     resize: vertical;
     min-height: 100px;
+    overflow: visible;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+/* Estilo para exibição estática (usado na exportação) */
+.campo-grupo .texto-estatico {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #666;
+    background: white;
+    font-size: 14px;
+    font-family: inherit;
+    min-height: 100px;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    line-height: 1.5;
 }
 
 #lista-jogadores {
@@ -295,12 +312,22 @@ body {
     align-items: flex-start;
 }
 
-.regra-casa-item input[type="text"] {
+.regra-casa-item input[type="text"],
+.regra-casa-item textarea {
     flex: 1;
     padding: 10px;
     border: 2px solid #666;
     background: white;
     font-size: 14px;
+    font-family: inherit;
+}
+
+.regra-casa-item textarea {
+    resize: none;
+    min-height: 40px;
+    height: auto;
+    overflow-y: hidden;
+    line-height: 1.4;
 }
 
 .btn-remover {
@@ -431,4 +458,129 @@ body {
         box-shadow: none;
         border: 1px solid #333;
     }
+}
+
+/* Modal de Imagem Exportada */
+.modal-imagem {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.modal-imagem-content {
+    position: relative;
+    margin: 20px auto;
+    max-width: 95%;
+    text-align: center;
+    padding-bottom: 80px;
+}
+
+.modal-imagem-header {
+    position: sticky;
+    top: 0;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    border-bottom: 2px solid #8b0000;
+}
+
+.modal-imagem-header h3 {
+    color: white;
+    font-size: 16px;
+    margin: 0;
+}
+
+.modal-imagem-instrucoes {
+    color: #ccc;
+    font-size: 14px;
+    padding: 15px;
+    background: rgba(139, 0, 0, 0.2);
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+
+.modal-imagem-instrucoes strong {
+    color: #fff;
+}
+
+.btn-fechar-modal {
+    background: #8b0000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.btn-fechar-modal:hover {
+    background: #a00000;
+}
+
+.imagem-exportada {
+    max-width: 100%;
+    height: auto;
+    border: 3px solid #333;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.modal-imagem-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 15px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    border-top: 2px solid #8b0000;
+}
+
+.btn-download {
+    background: #4a4a4a;
+    color: white;
+    border: 2px solid #333;
+    padding: 12px 24px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.btn-download:hover {
+    background: #5a5a5a;
+}
+
+/* Classe para forçar layout de desktop durante exportação */
+.export-mode .colunas-container {
+    grid-template-columns: 1fr 1fr !important;
+}
+
+.export-mode #lista-jogadores {
+    grid-template-columns: 1fr 1fr !important;
+}
+
+.export-mode .ficha-content {
+    padding: 40px !important;
+}
+
+.export-mode .ficha-header h1 {
+    font-size: 36px !important;
+    letter-spacing: 4px !important;
+}
+
+.export-mode .secao-regras {
+    padding: 20px !important;
 }
