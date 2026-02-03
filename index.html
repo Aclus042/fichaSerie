@@ -22,14 +22,16 @@
         <div class="ficha-content">
             <!-- Informações Básicas -->
             <section class="secao-basica">
-                <div class="campo-grupo">
-                    <label>Nome da Série</label>
-                    <input type="text" id="nome-serie" placeholder="Digite o nome da série">
-                </div>
-                
-                <div class="campo-grupo">
-                    <label>Mestre</label>
-                    <input type="text" id="mestre" placeholder="Digite o nome do mestre">
+                <div class="campos-inline">
+                    <div class="campo-grupo campo-inline">
+                        <label>Nome da Série</label>
+                        <input type="text" id="nome-serie" placeholder="Digite o nome da série">
+                    </div>
+                    
+                    <div class="campo-grupo campo-inline">
+                        <label>Mestre</label>
+                        <input type="text" id="mestre" placeholder="Digite o nome do mestre">
+                    </div>
                 </div>
 
                 <div class="campo-grupo">
@@ -65,7 +67,7 @@
                 <div class="coluna-esquerda">
             <!-- Regras Opcionais do Livro Básico -->
             <section class="secao-regras">
-                <h2>REGRAS OPCIONAIS DO LIVRO BÁSICO</h2>
+                <h2>LIVRO BÁSICO</h2>
                 <div class="regras-lista">
                     <label class="checkbox-label">
                         <input type="checkbox" data-regra="basico-1">
@@ -96,7 +98,7 @@
 
             <!-- Regras Opcionais de Sobrevivendo ao Horror -->
             <section class="secao-regras">
-                <h2>REGRAS OPCIONAIS DE SOBREVIVENDO AO HORROR</h2>
+                <h2>SOBREVIVENDO AO HORROR</h2>
                 <div class="regras-lista">
                     <label class="checkbox-label">
                         <input type="checkbox" data-regra="sah-1">
@@ -139,48 +141,18 @@
                 </div>
 
                 <div class="coluna-direita">
-            <!-- Estilos de Jogo -->
-            <section class="secao-regras">
-                <h2>ESTILOS DE JOGO</h2>
-                
-                <div class="estilo-grupo">
-                    <h3>Foco em Ação</h3>
-                    <ul class="lista-estilos">
-                        <li>Contagem de Munição (OPRPG, p. 174)</li>
-                        <li>Lesões (OPRPG, p. 174)</li>
-                        <li>Inspiração Resoluta (OPRPG, p. 174)</li>
-                        <li>Conjurando Rituais Desconhecidos (SaH, p. 117)</li>
-                    </ul>
-                </div>
-
-                <div class="estilo-grupo">
-                    <h3>Foco em Drama</h3>
-                    <ul class="lista-estilos">
-                        <li>Personagens de Idade Variada (OPRPG, p. 172)</li>
-                        <li>NEX & Experiência (SaH, p. 98)</li>
-                        <li>Ferimentos Debilitantes (SaH, p. 105)</li>
-                        <li>Jogando sem Mapa (SaH, p. 106)</li>
-                        <li>Evolução por Patentes (SaH, p. 108)</li>
-                        <li>Os Limites da Compreensão Humana (SaH, p. 113)</li>
-                        <li>Conjurando Rituais Desconhecidos (SaH, p. 117)</li>
-                        <li>Combate Narrativo (SaH, p. 119)</li>
-                    </ul>
-                </div>
-
-                <div class="estilo-grupo">
-                    <h3>Foco em Horror</h3>
-                    <ul class="lista-estilos">
-                        <li>Personagens de Idade Variada (OPRPG, p. 172)</li>
-                        <li>Contagem de Munição (OPRPG, p. 174)</li>
-                        <li>NEX & Experiência (SaH, p. 98)</li>
-                        <li>Jogando sem Sanidade (SaH, p. 104)</li>
-                        <li>Ferimentos Debilitantes (SaH, p. 105)</li>
-                        <li>Jogando sem Mapa (SaH, p. 106)</li>
-                        <li>Evolução por Patentes (SaH, p. 108)</li>
-                        <li>Os Limites da Compreensão Humana (SaH, p. 113)</li>
-                        <li>Conjuração Complexa (SaH, p. 114)</li>
-                        <li>Conjurando Rituais Desconhecidos (SaH, p. 117)</li>
-                    </ul>
+            <!-- ARQUIVOS SECRETOS -->
+            <section class="secao-regras secao-arquivos-secretos">
+                <h2>ARQUIVOS SECRETOS</h2>
+                <div class="regras-lista">
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="secreto-1">
+                        <span>Transcender com Itens</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" data-regra="secreto-2">
+                        <span>Reter Ritual</span>
+                    </label>
                 </div>
             </section>
 
