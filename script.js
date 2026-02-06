@@ -377,87 +377,102 @@ function desenharFichaCanvas(dados) {
     const regrasSecretasMarcadas = dados.regrasSecretas || [];
     const regrasCasaMarcadas = dados.regrasCasa || [];
     
-    // Combinar todas as regras em um único array
-    const todasRegras = [];
+    // Separar regras dos livros e regras da casa
+    const regrasLivros = [];
     if (regrasBasicoMarcadas.length > 0) {
-        todasRegras.push({ titulo: 'LIVRO BÁSICO', regras: regrasBasicoMarcadas, isSecreto: false });
+        regrasLivros.push({ titulo: 'LIVRO BÁSICO', regras: regrasBasicoMarcadas, isSecreto: false });
     }
     if (regrasSaHMarcadas.length > 0) {
-        todasRegras.push({ titulo: 'SOBREVIVENDO AO HORROR', regras: regrasSaHMarcadas, isSecreto: false });
+        regrasLivros.push({ titulo: 'SOBREVIVENDO AO HORROR', regras: regrasSaHMarcadas, isSecreto: false });
     }
     if (regrasSecretasMarcadas.length > 0) {
-        todasRegras.push({ titulo: 'ARQUIVOS SECRETOS', regras: regrasSecretasMarcadas, isSecreto: true });
+        regrasLivros.push({ titulo: 'ARQUIVOS SECRETOS', regras: regrasSecretasMarcadas, isSecreto: true });
     }
-    if (regrasCasaMarcadas.length > 0) {
-        todasRegras.push({ titulo: 'REGRAS DA CASA', regras: regrasCasaMarcadas, isSecreto: false, isCasa: true });
-    }
+    
+    // Regras da casa ficam separadas (na base)
+    const temRegrasCasa = regrasCasaMarcadas.length > 0;
     
     // Calcular altura do bloco de Mestre/Jogadores (lateral)
     const alturaInfoBox = 70 + (dados.jogadores.length + 1) * 38 + 30;
     const infoBoxWidth = 280; // Largura menor para lateral
     
-    // Calcular altura das seções de regras
+    // Calcular altura das seções de regras dos livros
     const calcularAlturaRegra = (secao) => {
-        if (secao.isCasa) {
-            let altura = 70;
-            for (const regra of secao.regras) {
-                const linhas = quebrarTextoMultilinha(tempCtx, regra, (contentWidth - infoBoxWidth - 60) - 60);
-                altura += linhas.length * 24 + 20;
-            }
-            return altura;
-        }
         return 70 + secao.regras.length * 32 + 25;
     };
     
-    const alturasRegras = todasRegras.map(calcularAlturaRegra);
+    const alturasRegras = regrasLivros.map(calcularAlturaRegra);
     
-    // Determinar número de colunas para regras baseado na quantidade e altura
+    // Determinar número de colunas para regras dos livros baseado na quantidade e altura
     const espacoRegras = contentWidth - infoBoxWidth - 30;
     let numColunasRegras = 1;
     let larguraColRegra = espacoRegras;
     
     // Se houver muitas regras ou altura muito grande, dividir em colunas
     const alturaTotal = alturasRegras.reduce((a, b) => a + b + 20, 0);
-    if (todasRegras.length >= 3 || alturaTotal > 800) {
+    if (regrasLivros.length >= 2 || alturaTotal > 600) {
         // Tentar 2 colunas
         if (espacoRegras >= 600) {
             numColunasRegras = 2;
             larguraColRegra = (espacoRegras - 30) / 2;
         }
     }
-    if (todasRegras.length >= 5 && espacoRegras >= 900) {
+    if (regrasLivros.length >= 4 && espacoRegras >= 900) {
         // Tentar 3 colunas se houver muitas regras
         numColunasRegras = 3;
         larguraColRegra = (espacoRegras - 60) / 3;
     }
     
-    // Recalcular alturas das regras com nova largura
-    const calcularAlturaRegraComLargura = (secao, largura) => {
-        if (secao.isCasa) {
-            let altura = 70;
-            for (const regra of secao.regras) {
-                const linhas = quebrarTextoMultilinha(tempCtx, regra, largura - 60);
-                altura += linhas.length * 24 + 20;
-            }
-            return altura;
-        }
-        return 70 + secao.regras.length * 32 + 25;
-    };
+    // Alturas das regras já estão calculadas corretamente
+    const alturasRegrasAjustadas = alturasRegras;
     
-    const alturasRegrasAjustadas = todasRegras.map(s => calcularAlturaRegraComLargura(s, larguraColRegra));
-    
-    // Distribuir regras entre colunas de forma balanceada
+    // Distribuir regras dos livros entre colunas de forma balanceada
     const colunasRegras = Array.from({ length: numColunasRegras }, () => []);
     const alturasColunasRegras = Array(numColunasRegras).fill(0);
     
-    for (let i = 0; i < todasRegras.length; i++) {
+    for (let i = 0; i < regrasLivros.length; i++) {
         // Encontrar coluna com menor altura
         const menorIdx = alturasColunasRegras.indexOf(Math.min(...alturasColunasRegras));
-        colunasRegras[menorIdx].push({ secao: todasRegras[i], altura: alturasRegrasAjustadas[i] });
+        colunasRegras[menorIdx].push({ secao: regrasLivros[i], altura: alturasRegrasAjustadas[i] });
         alturasColunasRegras[menorIdx] += alturasRegrasAjustadas[i] + 20;
     }
     
-    const alturaMaximaRegras = Math.max(...alturasColunasRegras) - 20;
+    const alturaMaximaRegras = Math.max(...alturasColunasRegras, 0) - 20;
+    
+    // Calcular altura das regras da casa (ficarão na base em 2 colunas)
+    let alturaRegrasCasa = 0;
+    const regrasCasaCol1 = [];
+    const regrasCasaCol2 = [];
+    
+    if (temRegrasCasa) {
+        // Largura de cada coluna de regras da casa
+        const larguraColunaRC = (contentWidth - 60) / 2;
+        
+        // Calcular altura de cada regra e distribuir em colunas
+        const alturasRC = [];
+        for (const regra of regrasCasaMarcadas) {
+            const linhas = quebrarTextoMultilinha(tempCtx, regra, larguraColunaRC - 20);
+            const altura = linhas.length * 24 + 25;
+            alturasRC.push({ regra, altura, linhas });
+        }
+        
+        // Distribuir regras entre as duas colunas de forma balanceada
+        let alturaCol1 = 0;
+        let alturaCol2 = 0;
+        
+        for (const item of alturasRC) {
+            if (alturaCol1 <= alturaCol2) {
+                regrasCasaCol1.push(item);
+                alturaCol1 += item.altura;
+            } else {
+                regrasCasaCol2.push(item);
+                alturaCol2 += item.altura;
+            }
+        }
+        
+        // Altura final é baseada na coluna mais alta + cabeçalho
+        alturaRegrasCasa = 70 + Math.max(alturaCol1, alturaCol2) + 15;
+    }
     
     // Calcular sinopse (2 colunas) - CORRIGIDO para calcular largura correta
     const espacoEntreColunas = 40; // Espaço entre as colunas
@@ -478,7 +493,8 @@ function desenharFichaCanvas(dados) {
     // Calcular altura total
     const headerHeight = 90; // Título externo
     const blocoPrincipalHeight = Math.max(alturaMaximaRegras, alturaInfoBox) + 50;
-    const totalHeight = headerHeight + 30 + blocoPrincipalHeight + 30 + alturaSinopse + padding;
+    const espacoRegrasCasa = temRegrasCasa ? alturaRegrasCasa + 30 : 0;
+    const totalHeight = headerHeight + 30 + blocoPrincipalHeight + 30 + alturaSinopse + espacoRegrasCasa + padding;
     
     // Criar canvas final
     const canvas = document.createElement('canvas');
@@ -530,7 +546,7 @@ function desenharFichaCanvas(dados) {
     const regrasX = infoBoxX + infoBoxWidth + 30; // Regras à direita
     const regrasWidth = contentWidth - infoBoxWidth - 30;
     
-    // Função para desenhar seção de regras
+    // Função para desenhar seção de regras dos livros
     function desenharSecaoRegras(secao, x, yPos, largura) {
         const altura = calcularAlturaRegra(secao);
         
@@ -595,30 +611,9 @@ function desenharFichaCanvas(dados) {
         ctx.font = '14px Segoe UI, sans-serif';
         ctx.fillStyle = '#333';
         
-        if (secao.isCasa) {
-            for (const regra of secao.regras) {
-                const linhas = quebrarTextoMultilinha(ctx, regra, largura - 60);
-                const boxHeight = linhas.length * 24 + 15;
-                
-                ctx.fillStyle = 'white';
-                ctx.fillRect(x + 15, regraY - 8, largura - 30, boxHeight);
-                ctx.strokeStyle = '#666';
-                ctx.lineWidth = 1.5;
-                ctx.strokeRect(x + 15, regraY - 8, largura - 30, boxHeight);
-                
-                ctx.fillStyle = '#333';
-                ctx.font = '14px Segoe UI, sans-serif';
-                for (const linha of linhas) {
-                    ctx.fillText(linha, x + 25, regraY + 12);
-                    regraY += 24;
-                }
-                regraY += 20;
-            }
-        } else {
-            for (const regra of secao.regras) {
-                ctx.fillText('• ' + regra, x + 25, regraY);
-                regraY += 28;
-            }
+        for (const regra of secao.regras) {
+            ctx.fillText('• ' + regra, x + 25, regraY);
+            regraY += 28;
         }
         
         return altura;
@@ -696,7 +691,7 @@ function desenharFichaCanvas(dados) {
         infoY += 38;
     }
     
-    // Desenhar regras em múltiplas colunas à direita
+    // Desenhar regras dos livros em múltiplas colunas à direita
     for (let col = 0; col < numColunasRegras; col++) {
         const colX = regrasX + col * (larguraColRegra + 30);
         let colY = blocoY;
@@ -708,6 +703,93 @@ function desenharFichaCanvas(dados) {
     }
     
     y = blocoY + blocoPrincipalHeight + 30;
+    
+    // ===== REGRAS DA CASA - NA BASE EM 2 COLUNAS =====
+    if (temRegrasCasa) {
+        ctx.fillStyle = 'rgba(139, 0, 0, 0.08)';
+        ctx.fillRect(padding, y, contentWidth, alturaRegrasCasa);
+        ctx.strokeStyle = '#8b0000';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(padding, y, contentWidth, alturaRegrasCasa);
+        ctx.fillStyle = '#8b0000';
+        ctx.fillRect(padding, y, contentWidth, 5);
+        
+        // Título centralizado
+        ctx.fillStyle = '#1a1a1a';
+        ctx.font = 'bold 16px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('REGRAS DA CASA', width / 2, y + 32);
+        
+        ctx.strokeStyle = '#8b0000';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(padding + 50, y + 40);
+        ctx.lineTo(width - padding - 50, y + 40);
+        ctx.stroke();
+        
+        ctx.textAlign = 'left';
+        
+        // Largura de cada coluna
+        const larguraColunaRC = (contentWidth - 60) / 2;
+        const espacoEntreColRC = 40;
+        const col1X = padding + 20;
+        const col2X = padding + 20 + larguraColunaRC + espacoEntreColRC;
+        
+        // Linha divisória vertical
+        const divXRC = width / 2;
+        ctx.strokeStyle = '#ccc';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(divXRC, y + 50);
+        ctx.lineTo(divXRC, y + alturaRegrasCasa - 20);
+        ctx.stroke();
+        
+        // Desenhar Coluna 1
+        let regraY1 = y + 60;
+        ctx.font = '14px Segoe UI, sans-serif';
+        ctx.fillStyle = '#333';
+        
+        for (const item of regrasCasaCol1) {
+            const boxHeight = item.linhas.length * 24 + 15;
+            
+            ctx.fillStyle = 'white';
+            ctx.fillRect(col1X, regraY1 - 8, larguraColunaRC - 10, boxHeight);
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(col1X, regraY1 - 8, larguraColunaRC - 10, boxHeight);
+            
+            ctx.fillStyle = '#333';
+            ctx.font = '14px Segoe UI, sans-serif';
+            for (const linha of item.linhas) {
+                ctx.fillText(linha, col1X + 10, regraY1 + 12);
+                regraY1 += 24;
+            }
+            regraY1 += 25;
+        }
+        
+        // Desenhar Coluna 2
+        let regraY2 = y + 60;
+        
+        for (const item of regrasCasaCol2) {
+            const boxHeight = item.linhas.length * 24 + 15;
+            
+            ctx.fillStyle = 'white';
+            ctx.fillRect(col2X, regraY2 - 8, larguraColunaRC - 10, boxHeight);
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(col2X, regraY2 - 8, larguraColunaRC - 10, boxHeight);
+            
+            ctx.fillStyle = '#333';
+            ctx.font = '14px Segoe UI, sans-serif';
+            for (const linha of item.linhas) {
+                ctx.fillText(linha, col2X + 10, regraY2 + 12);
+                regraY2 += 24;
+            }
+            regraY2 += 25;
+        }
+        
+        y += alturaRegrasCasa + 30;
+    }
     
     // ===== SINOPSE - 2 COLUNAS =====
     if (dados.sinopse && dados.sinopse.trim()) {
