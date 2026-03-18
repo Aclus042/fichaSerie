@@ -531,7 +531,8 @@ function desenharFichaCanvas(dados) {
     const headerHeight = 90; // Título externo
     const blocoPrincipalHeight = Math.max(alturaMaximaRegras, alturaInfoBox) + 50;
     const espacoRegrasCasa = temRegrasCasa ? alturaRegrasCasa + 30 : 0;
-    const totalHeight = headerHeight + 30 + alturaMeta + 20 + blocoPrincipalHeight + 30 + alturaSinopse + espacoRegrasCasa + padding;
+    const alturaSinopseTotal = (dados.sinopse && dados.sinopse.trim()) ? alturaSinopse + 20 : 0;
+    const totalHeight = headerHeight + 30 + alturaMeta + 20 + alturaSinopseTotal + blocoPrincipalHeight + 30 + espacoRegrasCasa + padding;
     
     // Criar canvas final
     const canvas = document.createElement('canvas');
@@ -617,6 +618,61 @@ function desenharFichaCanvas(dados) {
     }
 
     y += alturaMeta + 20;
+    
+    // ===== SINOPSE - 2 COLUNAS (ANTES DO BLOCO PRINCIPAL) =====
+    if (dados.sinopse && dados.sinopse.trim()) {
+        // Background
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.fillRect(padding, y, contentWidth, alturaSinopse);
+        ctx.strokeStyle = '#666';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(padding, y, contentWidth, alturaSinopse);
+        ctx.fillStyle = '#8b0000';
+        ctx.fillRect(padding, y, contentWidth, 5);
+        
+        // Título
+        ctx.fillStyle = '#1a1a1a';
+        ctx.font = 'bold 16px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('SINOPSE', width / 2, y + 32);
+        
+        ctx.strokeStyle = '#8b0000';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(padding + 50, y + 40);
+        ctx.lineTo(width - padding - 50, y + 40);
+        ctx.stroke();
+        
+        ctx.textAlign = 'left';
+        
+        // Coluna 1 - com largura correta
+        ctx.fillStyle = '#333';
+        ctx.font = '15px Segoe UI, sans-serif';
+        let sinY1 = y + 60;
+        for (const linha of sinopseCol1) {
+            ctx.fillText(linha, padding + 25, sinY1);
+            sinY1 += 24;
+        }
+        
+        // Linha divisória vertical no centro
+        const divX = width / 2;
+        ctx.strokeStyle = '#ccc';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(divX, y + 50);
+        ctx.lineTo(divX, y + alturaSinopse - 20);
+        ctx.stroke();
+        
+        // Coluna 2 - com largura correta
+        let sinY2 = y + 60;
+        const col2X = divX + 20; // Margem após a linha divisória
+        for (const linha of sinopseCol2) {
+            ctx.fillText(linha, col2X, sinY2);
+            sinY2 += 24;
+        }
+        
+        y += alturaSinopse + 20;
+    }
     
     // ===== BLOCO PRINCIPAL - Layout com mestre/jogadores na lateral esquerda =====
     const blocoY = y;
@@ -869,59 +925,6 @@ function desenharFichaCanvas(dados) {
         }
         
         y += alturaRegrasCasa + 30;
-    }
-    
-    // ===== SINOPSE - 2 COLUNAS =====
-    if (dados.sinopse && dados.sinopse.trim()) {
-        // Background
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-        ctx.fillRect(padding, y, contentWidth, alturaSinopse);
-        ctx.strokeStyle = '#666';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(padding, y, contentWidth, alturaSinopse);
-        ctx.fillStyle = '#8b0000';
-        ctx.fillRect(padding, y, contentWidth, 5);
-        
-        // Título
-        ctx.fillStyle = '#1a1a1a';
-        ctx.font = 'bold 16px Segoe UI, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('SINOPSE', width / 2, y + 32);
-        
-        ctx.strokeStyle = '#8b0000';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(padding + 50, y + 40);
-        ctx.lineTo(width - padding - 50, y + 40);
-        ctx.stroke();
-        
-        ctx.textAlign = 'left';
-        
-        // Coluna 1 - com largura correta
-        ctx.fillStyle = '#333';
-        ctx.font = '15px Segoe UI, sans-serif';
-        let sinY1 = y + 60;
-        for (const linha of sinopseCol1) {
-            ctx.fillText(linha, padding + 25, sinY1);
-            sinY1 += 24;
-        }
-        
-        // Linha divisória vertical no centro
-        const divX = width / 2;
-        ctx.strokeStyle = '#ccc';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(divX, y + 50);
-        ctx.lineTo(divX, y + alturaSinopse - 20);
-        ctx.stroke();
-        
-        // Coluna 2 - com largura correta
-        let sinY2 = y + 60;
-        const col2X = divX + 20; // Margem após a linha divisória
-        for (const linha of sinopseCol2) {
-            ctx.fillText(linha, col2X, sinY2);
-            sinY2 += 24;
-        }
     }
     
     return canvas;
