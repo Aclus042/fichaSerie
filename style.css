@@ -206,12 +206,28 @@ body::before {
     margin-bottom: 25px;
 }
 
+.campos-status {
+    grid-template-columns: 130px 130px 1fr;
+    gap: 14px;
+    margin-top: -5px;
+    margin-bottom: 20px;
+}
+
+.campo-pequeno {
+    margin-bottom: 0;
+}
+
 .campo-inline {
     margin-bottom: 0;
 }
 
 @media (max-width: 768px) {
     .campos-inline {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .campos-status {
         grid-template-columns: 1fr;
         gap: 25px;
     }
@@ -242,6 +258,8 @@ body::before {
 }
 
 .campo-grupo input[type="text"],
+.campo-grupo input[type="number"],
+.campo-grupo select,
 .campo-grupo textarea {
     width: 100%;
     padding: 14px;
@@ -255,12 +273,16 @@ body::before {
 }
 
 .campo-grupo input[type="text"]:hover,
+.campo-grupo input[type="number"]:hover,
+.campo-grupo select:hover,
 .campo-grupo textarea:hover {
     border-color: #666;
     background: #ffffff;
 }
 
 .campo-grupo input[type="text"]:focus,
+.campo-grupo input[type="number"]:focus,
+.campo-grupo select:focus,
 .campo-grupo textarea:focus {
     outline: none;
     border-color: #8b0000;
@@ -268,6 +290,16 @@ body::before {
     box-shadow: 0 0 0 4px rgba(139, 0, 0, 0.15),
                 inset 0 2px 4px rgba(0, 0, 0, 0.05);
     transform: translateY(-1px);
+}
+
+.campo-grupo input[type="number"] {
+    appearance: textfield;
+}
+
+.campo-grupo input[type="number"]::-webkit-outer-spin-button,
+.campo-grupo input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .campo-grupo textarea {

@@ -34,6 +34,31 @@
                     </div>
                 </div>
 
+                <div class="campos-inline campos-status">
+                    <div class="campo-grupo campo-inline campo-pequeno">
+                        <label>Nível</label>
+                        <input type="number" id="nivel" min="1" step="1" inputmode="numeric" placeholder="Ex: 1">
+                    </div>
+
+                    <div class="campo-grupo campo-inline campo-pequeno">
+                        <label>NEX (%)</label>
+                        <input type="number" id="nex" min="0" max="100" step="5" inputmode="numeric" placeholder="Ex: 5, 10, 15...">
+                    </div>
+
+                    <div class="campo-grupo campo-inline campo-pequeno">
+                        <label>Patente</label>
+                        <select id="patente">
+                            <option value="">Selecione a patente</option>
+                            <option value="Mundano">Mundano</option>
+                            <option value="Recruta">Recruta</option>
+                            <option value="Operador">Operador</option>
+                            <option value="Agente Especial">Agente Especial</option>
+                            <option value="Oficial de Operações">Oficial de Operações</option>
+                            <option value="Agente de Elite">Agente de Elite</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="campo-grupo">
                     <label>Jogadores</label>
                     <div id="lista-jogadores">

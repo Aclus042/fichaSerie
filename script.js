@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     carregarEstado();
     configurarAutoSave();
     configurarAutoResize();
+    configurarCamposNumericos();
 });
 
 // Configurar auto-resize para textareas
@@ -20,6 +21,29 @@ function configurarAutoResize() {
 function autoResizeTextarea(textarea) {
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight + 'px';
+}
+
+function permitirSomenteInteiro(valor) {
+    return String(valor || '').replace(/\D/g, '');
+}
+
+function configurarCamposNumericos() {
+    const nivelInput = document.getElementById('nivel');
+    const nexInput = document.getElementById('nex');
+
+    if (nivelInput) {
+        nivelInput.addEventListener('input', function() {
+            this.value = permitirSomenteInteiro(this.value);
+        });
+    }
+
+    if (nexInput) {
+        nexInput.addEventListener('input', function() {
+            const valorFiltrado = permitirSomenteInteiro(this.value);
+            const valorNumerico = valorFiltrado === '' ? '' : Math.min(100, Number(valorFiltrado));
+            this.value = valorNumerico === '' ? '' : String(valorNumerico);
+        });
+    }
 }
 
 // Variável global para armazenar o blob da imagem
@@ -99,6 +123,9 @@ function salvarEstado() {
     const estado = {
         nomeSerie: document.getElementById('nome-serie').value,
         mestre: document.getElementById('mestre').value,
+        nivel: document.getElementById('nivel').value,
+        nex: document.getElementById('nex').value,
+        patente: document.getElementById('patente').value,
         jogadores: Array.from(document.querySelectorAll('.jogador-item .jogador-input')).map(input => input.value),
         sinopse: document.getElementById('sinopse').value,
         checkboxes: Array.from(document.querySelectorAll('input[type="checkbox"]')).map(cb => ({
@@ -121,12 +148,15 @@ function carregarEstado() {
     // Carregar campos básicos
     document.getElementById('nome-serie').value = estado.nomeSerie || '';
     document.getElementById('mestre').value = estado.mestre || '';
+    document.getElementById('nivel').value = estado.nivel || '';
+    document.getElementById('nex').value = estado.nex || '';
+    document.getElementById('patente').value = estado.patente || '';
     document.getElementById('sinopse').value = estado.sinopse || '';
     
     // Carregar jogadores
     const listaJogadores = document.getElementById('lista-jogadores');
     listaJogadores.innerHTML = '';
-    if (estado.jogadores.length > 0) {
+    if (estado.jogadores && estado.jogadores.length > 0) {
         estado.jogadores.forEach((jogador, index) => {
             const div = document.createElement('div');
             div.className = 'jogador-item';
@@ -152,7 +182,7 @@ function carregarEstado() {
     }
     
     // Carregar checkboxes
-    estado.checkboxes.forEach(item => {
+    (estado.checkboxes || []).forEach(item => {
         const checkbox = document.querySelector(`input[data-regra="${item.regra}"]`);
         if (checkbox) {
             checkbox.checked = item.checked;
@@ -162,7 +192,7 @@ function carregarEstado() {
     // Carregar regras da casa
     const listaRegrasCasa = document.getElementById('regras-casa-lista');
     listaRegrasCasa.innerHTML = '';
-    estado.regrasCasa.forEach(regra => {
+    (estado.regrasCasa || []).forEach(regra => {
         if (regra.trim()) {
             const div = document.createElement('div');
             div.className = 'regra-casa-item';
@@ -205,6 +235,9 @@ function configurarAutoSave() {
     // Campos de texto
     document.getElementById('nome-serie').addEventListener('input', salvarEstado);
     document.getElementById('mestre').addEventListener('input', salvarEstado);
+    document.getElementById('nivel').addEventListener('input', salvarEstado);
+    document.getElementById('nex').addEventListener('input', salvarEstado);
+    document.getElementById('patente').addEventListener('change', salvarEstado);
     document.getElementById('sinopse').addEventListener('input', salvarEstado);
     
     // Jogadores
@@ -274,6 +307,9 @@ function coletarDadosFicha() {
     return {
         nomeSerie: document.getElementById('nome-serie').value,
         mestre: document.getElementById('mestre').value,
+        nivel: document.getElementById('nivel').value,
+        nex: document.getElementById('nex').value,
+        patente: document.getElementById('patente').value,
         jogadores: Array.from(document.querySelectorAll('.jogador-item .jogador-input'))
             .map(input => input.value)
             .filter(v => v.trim() !== ''),
@@ -365,6 +401,7 @@ function desenharFichaCanvas(dados) {
     const width = 1400;
     const padding = 50;
     const contentWidth = width - (padding * 2);
+    const alturaMeta = 88;
     
     // Criar canvas temporário para calcular alturas
     const tempCanvas = document.createElement('canvas');
@@ -494,7 +531,7 @@ function desenharFichaCanvas(dados) {
     const headerHeight = 90; // Título externo
     const blocoPrincipalHeight = Math.max(alturaMaximaRegras, alturaInfoBox) + 50;
     const espacoRegrasCasa = temRegrasCasa ? alturaRegrasCasa + 30 : 0;
-    const totalHeight = headerHeight + 30 + blocoPrincipalHeight + 30 + alturaSinopse + espacoRegrasCasa + padding;
+    const totalHeight = headerHeight + 30 + alturaMeta + 20 + blocoPrincipalHeight + 30 + alturaSinopse + espacoRegrasCasa + padding;
     
     // Criar canvas final
     const canvas = document.createElement('canvas');
@@ -537,6 +574,49 @@ function desenharFichaCanvas(dados) {
     
     y += 100;
     ctx.textAlign = 'left';
+
+    // ===== BLOCO DE NÍVEL / NEX / PATENTE =====
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.fillRect(padding, y, contentWidth, alturaMeta);
+    ctx.strokeStyle = '#8b0000';
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(padding, y, contentWidth, alturaMeta);
+    ctx.fillStyle = '#8b0000';
+    ctx.fillRect(padding, y, 5, alturaMeta);
+
+    const metaGap = 16;
+    const metaBoxWidth = (contentWidth - (metaGap * 4)) / 3;
+    const metaInicioX = padding + metaGap;
+    const metaY = y + 16;
+    const metaAltura = 56;
+    const metaInfo = [
+        { titulo: 'NÍVEL', valor: dados.nivel || '-' },
+        { titulo: 'NEX', valor: dados.nex ? `${dados.nex}%` : '-' },
+        { titulo: 'PATENTE', valor: dados.patente || '-' }
+    ];
+
+    for (let i = 0; i < metaInfo.length; i++) {
+        const boxX = metaInicioX + i * (metaBoxWidth + metaGap);
+        const item = metaInfo[i];
+
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(boxX, metaY, metaBoxWidth, metaAltura);
+        ctx.strokeStyle = '#666';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(boxX, metaY, metaBoxWidth, metaAltura);
+
+        ctx.fillStyle = '#8b0000';
+        ctx.font = 'bold 12px Segoe UI, sans-serif';
+        ctx.fillText(item.titulo, boxX + 10, metaY + 20);
+
+        ctx.fillStyle = '#1a1a1a';
+        ctx.font = 'bold 17px Segoe UI, sans-serif';
+        const valorLinhas = quebrarTexto(ctx, item.valor, metaBoxWidth - 20);
+        const valorPrincipal = valorLinhas[0] || '-';
+        ctx.fillText(valorPrincipal, boxX + 10, metaY + 43);
+    }
+
+    y += alturaMeta + 20;
     
     // ===== BLOCO PRINCIPAL - Layout com mestre/jogadores na lateral esquerda =====
     const blocoY = y;
