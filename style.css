@@ -596,6 +596,18 @@ body::before {
     border-color: rgba(139, 0, 0, 0.4);
 }
 
+.secao-arquivos-secretos .regras-lista {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+@media (max-width: 768px) {
+    .secao-arquivos-secretos .regras-lista {
+        grid-template-columns: 1fr;
+    }
+}
+
 .regras-lista {
     display: flex;
     flex-direction: column;
