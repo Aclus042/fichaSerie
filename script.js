@@ -323,6 +323,9 @@ function coletarDadosFicha() {
         regrasSecretas: Array.from(document.querySelectorAll('input[data-regra^="secreto"]'))
             .filter(cb => cb.checked)
             .map(cb => cb.nextElementSibling.textContent),
+        regrasHexatombe: Array.from(document.querySelectorAll('input[data-regra^="hexatombe"]'))
+            .filter(cb => cb.checked)
+            .map(cb => cb.nextElementSibling.textContent),
         regrasCasa: Array.from(document.querySelectorAll('.regra-casa-item textarea'))
             .map(textarea => textarea.value)
             .filter(v => v.trim() !== '')
@@ -412,6 +415,7 @@ function desenharFichaCanvas(dados) {
     const regrasBasicoMarcadas = dados.regrasBasico || [];
     const regrasSaHMarcadas = dados.regrasSaH || [];
     const regrasSecretasMarcadas = dados.regrasSecretas || [];
+    const regrasHexatombeMarcadas = dados.regrasHexatombe || [];
     const regrasCasaMarcadas = dados.regrasCasa || [];
     
     // Separar regras dos livros e regras da casa
@@ -425,6 +429,9 @@ function desenharFichaCanvas(dados) {
     if (regrasSecretasMarcadas.length > 0) {
         regrasLivros.push({ titulo: 'ARQUIVOS SECRETOS', regras: regrasSecretasMarcadas, isSecreto: true });
     }
+    if (regrasHexatombeMarcadas.length > 0) {
+        regrasLivros.push({ titulo: 'HEXATOMBE', regras: regrasHexatombeMarcadas, isHexatombe: true });
+    }
     
     // Regras da casa ficam separadas (na base)
     const temRegrasCasa = regrasCasaMarcadas.length > 0;
@@ -434,33 +441,42 @@ function desenharFichaCanvas(dados) {
     const infoBoxWidth = 280; // Largura menor para lateral
     
     // Calcular altura das seções de regras dos livros
-    const calcularAlturaRegra = (secao) => {
-        return 70 + secao.regras.length * 32 + 25;
-    };
-    
-    const alturasRegras = regrasLivros.map(calcularAlturaRegra);
-    
-    // Determinar número de colunas para regras dos livros baseado na quantidade e altura
+    // Determinar número de colunas para regras dos livros
     const espacoRegras = contentWidth - infoBoxWidth - 30;
     let numColunasRegras = 1;
     let larguraColRegra = espacoRegras;
-    
-    // Se houver muitas regras ou altura muito grande, dividir em colunas
-    const alturaTotal = alturasRegras.reduce((a, b) => a + b + 20, 0);
-    if (regrasLivros.length >= 2 || alturaTotal > 600) {
-        // Tentar 2 colunas
-        if (espacoRegras >= 600) {
+
+    if (regrasLivros.length >= 2 && espacoRegras >= 600) {
+        numColunasRegras = 2;
+        larguraColRegra = (espacoRegras - 30) / 2;
+    }
+
+    // Calcular altura das seções com quebra de texto
+    tempCtx.font = '14px Segoe UI, sans-serif';
+    const calcularAlturaRegra = (secao) => {
+        let alturaRegras = 0;
+        const textoMaxWidth = larguraColRegra - 50;
+        for (const regra of secao.regras) {
+            const linhas = quebrarTexto(tempCtx, '\u2022 ' + regra, textoMaxWidth);
+            alturaRegras += linhas.length * 24 + 6;
+        }
+        return 70 + alturaRegras + 15;
+    };
+
+    const alturasRegras = regrasLivros.map(calcularAlturaRegra);
+
+    // Para seção única, verificar se a altura justifica 2 colunas
+    if (numColunasRegras === 1) {
+        const alturaTotal = alturasRegras.reduce((a, b) => a + b + 20, 0);
+        if (alturaTotal > 600 && espacoRegras >= 600) {
             numColunasRegras = 2;
             larguraColRegra = (espacoRegras - 30) / 2;
+            for (let i = 0; i < regrasLivros.length; i++) {
+                alturasRegras[i] = calcularAlturaRegra(regrasLivros[i]);
+            }
         }
     }
-    if (regrasLivros.length >= 4 && espacoRegras >= 900) {
-        // Tentar 3 colunas se houver muitas regras
-        numColunasRegras = 3;
-        larguraColRegra = (espacoRegras - 60) / 3;
-    }
-    
-    // Alturas das regras já estão calculadas corretamente
+
     const alturasRegrasAjustadas = alturasRegras;
     
     // Distribuir regras dos livros entre colunas de forma balanceada
@@ -689,11 +705,18 @@ function desenharFichaCanvas(dados) {
         // Determinar estilo baseado no tipo de seção
         let corFundo, corBorda, corLinha, larguraBorda, usarPontilhado;
         
-        if (secao.isSecreto) {
-            // Arquivos Secretos - vermelho pontilhado
+        if (secao.isHexatombe) {
+            // Hexatombe - vermelho pontilhado
             corFundo = 'rgba(139, 0, 0, 0.08)';
             corBorda = '#8b0000';
             corLinha = '#8b0000';
+            larguraBorda = 3;
+            usarPontilhado = true;
+        } else if (secao.isSecreto) {
+            // Arquivos Secretos - roxo pontilhado
+            corFundo = 'rgba(90, 0, 120, 0.08)';
+            corBorda = '#5a0078';
+            corLinha = '#5a0078';
             larguraBorda = 3;
             usarPontilhado = true;
         } else if (secao.titulo === 'SOBREVIVENDO AO HORROR') {
@@ -742,14 +765,19 @@ function desenharFichaCanvas(dados) {
         ctx.lineTo(x + largura - 20, yPos + 35);
         ctx.stroke();
         
-        // Regras
+        // Regras com quebra de linha
         let regraY = yPos + 55;
         ctx.font = '14px Segoe UI, sans-serif';
         ctx.fillStyle = '#333';
+        const textoMaxWidth = largura - 50;
         
         for (const regra of secao.regras) {
-            ctx.fillText('• ' + regra, x + 25, regraY);
-            regraY += 28;
+            const linhas = quebrarTexto(ctx, '\u2022 ' + regra, textoMaxWidth);
+            for (let l = 0; l < linhas.length; l++) {
+                ctx.fillText(linhas[l], x + 25, regraY);
+                regraY += 24;
+            }
+            regraY += 6;
         }
         
         return altura;

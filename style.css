@@ -182,17 +182,15 @@ body::before {
     margin-bottom: 30px;
 }
 
-.colunas-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
+.blocos-regras {
+    columns: 2;
+    column-gap: 25px;
     margin-top: 20px;
 }
 
-.coluna-esquerda,
-.coluna-direita {
-    display: flex;
-    flex-direction: column;
+.blocos-regras .secao-regras {
+    break-inside: avoid;
+    margin-bottom: 25px;
 }
 
 .campo-grupo {
@@ -437,51 +435,51 @@ body::before {
     overflow: hidden;
 }
 
-/* Estilo específico para Livro Básico (Coluna Esquerda - 1ª seção) */
-.coluna-esquerda .secao-regras:nth-child(1) {
+/* Estilo específico para Livro Básico */
+.blocos-regras > .secao-regras:first-child {
     background: linear-gradient(135deg, rgba(100, 100, 100, 0.06) 0%, rgba(80, 80, 80, 0.04) 100%);
     border: 2px solid #666;
     border-left: 6px solid #555;
 }
 
-.coluna-esquerda .secao-regras:nth-child(1) h2 {
+.blocos-regras > .secao-regras:first-child h2 {
     border-bottom-color: #555;
 }
 
-.coluna-esquerda .secao-regras:nth-child(1) h2::after {
+.blocos-regras > .secao-regras:first-child h2::after {
     background: linear-gradient(90deg, #555, transparent);
 }
 
-.coluna-esquerda .secao-regras:nth-child(1)::before {
+.blocos-regras > .secao-regras:first-child::before {
     background: linear-gradient(180deg, #777, #555, #333);
 }
 
-.coluna-esquerda .secao-regras:nth-child(1):hover {
+.blocos-regras > .secao-regras:first-child:hover {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15),
                 inset 0 1px 0 rgba(255, 255, 255, 0.5),
                 0 0 0 1px rgba(85, 85, 85, 0.1);
 }
 
-/* Estilo específico para Sobrevivendo ao Horror (Coluna Direita - 1ª seção) */
-.coluna-direita .secao-regras:nth-child(1) {
+/* Estilo específico para Sobrevivendo ao Horror */
+.secao-sah {
     background: linear-gradient(135deg, rgba(30, 60, 120, 0.08) 0%, rgba(30, 60, 120, 0.05) 100%);
     border: 2px solid #1e3c78;
     border-left: 6px solid #1e3c78;
 }
 
-.coluna-direita .secao-regras:nth-child(1) h2 {
+.secao-sah h2 {
     border-bottom-color: #1e3c78;
 }
 
-.coluna-direita .secao-regras:nth-child(1) h2::after {
+.secao-sah h2::after {
     background: linear-gradient(90deg, #1e3c78, transparent);
 }
 
-.coluna-direita .secao-regras:nth-child(1)::before {
+.secao-sah::before {
     background: linear-gradient(180deg, #2a4d99, #1e3c78, #143160);
 }
 
-.coluna-direita .secao-regras:nth-child(1):hover {
+.secao-sah:hover {
     box-shadow: 0 8px 20px rgba(30, 60, 120, 0.15),
                 inset 0 1px 0 rgba(255, 255, 255, 0.5),
                 0 0 0 1px rgba(30, 60, 120, 0.1);
@@ -548,11 +546,9 @@ body::before {
 
 /* Arquivos Secretos - Estilo especial */
 .secao-arquivos-secretos {
-    background: linear-gradient(135deg, rgba(139, 0, 0, 0.05) 0%, rgba(139, 0, 0, 0.1) 100%);
-    border: 3px solid #8b0000;
-    border-left: 8px solid #8b0000;
-    box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2);
-    position: relative;
+    background: linear-gradient(135deg, rgba(90, 0, 120, 0.05) 0%, rgba(90, 0, 120, 0.08) 100%);
+    border: 2px solid #5a0078;
+    border-left: 6px solid #5a0078;
 }
 
 .secao-arquivos-secretos::before {
@@ -562,8 +558,8 @@ body::before {
     left: 5px;
     right: 5px;
     bottom: 5px;
-    border: 1px dashed #8b0000;
-    opacity: 0.3;
+    border: 1px dashed #5a0078;
+    opacity: 0.2;
     pointer-events: none;
 }
 
@@ -579,7 +575,7 @@ body::before {
 }
 
 .secao-arquivos-secretos h2 {
-    color: #8b0000;
+    color: #5a0078;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
@@ -588,24 +584,49 @@ body::before {
     margin: 4px 0;
     padding: 8px;
     border-radius: 4px;
-    border: 1px solid rgba(139, 0, 0, 0.2);
+    border: 1px solid rgba(90, 0, 120, 0.2);
 }
 
 .secao-arquivos-secretos .checkbox-label:hover {
+    background: rgba(90, 0, 120, 0.15);
+    border-color: rgba(90, 0, 120, 0.4);
+}
+
+/* Hexatombe - Estilo especial */
+.secao-hexatombe {
+    background: linear-gradient(135deg, rgba(139, 0, 0, 0.05) 0%, rgba(139, 0, 0, 0.08) 100%);
+    border: 2px solid #8b0000;
+    border-left: 6px solid #8b0000;
+}
+
+.secao-hexatombe::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border: 1px dashed #8b0000;
+    opacity: 0.2;
+    pointer-events: none;
+}
+
+.secao-hexatombe h2 {
+    color: #8b0000;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.secao-hexatombe .checkbox-label {
+    background: rgba(255, 255, 255, 0.6);
+    margin: 4px 0;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(139, 0, 0, 0.2);
+}
+
+.secao-hexatombe .checkbox-label:hover {
     background: rgba(139, 0, 0, 0.15);
     border-color: rgba(139, 0, 0, 0.4);
-}
-
-.secao-arquivos-secretos .regras-lista {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-}
-
-@media (max-width: 768px) {
-    .secao-arquivos-secretos .regras-lista {
-        grid-template-columns: 1fr;
-    }
 }
 
 .regras-lista {
@@ -1007,8 +1028,8 @@ body::before {
         padding: 15px;
     }
 
-    .colunas-container {
-        grid-template-columns: 1fr;
+    .blocos-regras {
+        columns: 1;
     }
 }
 
